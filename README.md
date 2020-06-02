@@ -19,6 +19,10 @@ npm install
 npm start
 ```
 3️⃣ PLAY THE GAME!!
+```
+Move Character - W,A,S,D
+Aim & Shoot - Mouse
+```
 ***
 ### Author
 👤 Gaurav Saini
