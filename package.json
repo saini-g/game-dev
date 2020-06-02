@@ -1,0 +1,26 @@
+{
+  "name": "game-dev",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html --open -p 3000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saini-g/game-dev.git"
+  },
+  "author": "@saini-g",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/saini-g/game-dev/issues"
+  },
+  "homepage": "https://github.com/saini-g/game-dev#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "dependencies": {
+    "pixi.js": "^5.2.4",
+    "rxjs": "^6.5.5"
+  }
+}
