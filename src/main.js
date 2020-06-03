@@ -26,7 +26,6 @@ document.body.appendChild(app.view);
 let tank;
 // TODO: change game state to behaviour subject
 const GAME_STATE = {
-  playerVelocity: { vx: 0, vy: 0 },
   playerBullets: []
 };
 //
@@ -64,8 +63,8 @@ loader
   });
 
 function updatePlayerVelocity(velocity) {
-  GAME_STATE.playerVelocity.vx = velocity.vx;
-  GAME_STATE.playerVelocity.vy = velocity.vy;
+  tank.velocity.vx = velocity.vx;
+  tank.velocity.vy = velocity.vy;
 }
 
 // all changes on game screen should be done here
@@ -86,26 +85,21 @@ function gameLoop(delta) {
 
   const turret = tank.getChildAt(1);
   turret.rotation = getPlayerRotation({
-    mx: app.renderer.plugins.interaction.mouse.global.x,
-    my: app.renderer.plugins.interaction.mouse.global.y,
-    px: tank.x,
-    py: tank.y
+    destX: app.renderer.plugins.interaction.mouse.global.x,
+    destY: app.renderer.plugins.interaction.mouse.global.y,
+    srcX: tank.x,
+    srcY: tank.y
   });
 
   if (
-    GAME_STATE.playerVelocity.vx !== 0
-    || GAME_STATE.playerVelocity.vy !== 0
+    tank.velocity.vx !== 0
+    || tank.velocity.vy !== 0
   ) {
-    const newPosition = getPlayerPosition(
-      { x: tank.x, y: tank.y },
-      GAME_STATE.playerVelocity,
-      tank.width / 2,
-      tank.height / 2
-    );
+    const newPosition = getPlayerPosition(tank);
     tank.x = newPosition.x;
     tank.y = newPosition.y;
 
-    const tankRotation = getTankDirection(GAME_STATE.playerVelocity);
+    const tankRotation = getTankDirection(tank.velocity);
     tank.getChildAt(0).rotation = tankRotation;
   }
 }

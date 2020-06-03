@@ -35,6 +35,6 @@ export const MOVEMENT_DIRECTION_ANGLES = {
 };
 
 // time between 2 bullets (ms)
-export const BULLET_TIME_DIFF = 250;
+export const BULLET_TIME_DIFF = 400;
 
-export const BULLET_SPEED = 30;
+export const BULLET_SPEED = 40;

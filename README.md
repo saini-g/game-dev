@@ -1,11 +1,10 @@
 ## Game Dev Playground
 
-> DEVELOPING GAMES JUST FOR FUN.
+### Create Games 🎮 -> Have Fun 🎉 -> Blast Stuff 🔥 -> Repeat 🔁
 
-Trying out my hand at basic game development.
 ***
 ### What is used?
-- [PixiJS](https://www.pixijs.io/)
+- [PixiJS](https://pixijs.io/)
 - [RxJS](https://rxjs-dev.firebaseapp.com/guide/overview)
 - [Parcel](https://parceljs.org/getting_started.html)
 ***
