@@ -21,6 +21,7 @@ export const EVENT_TYPES = {
 
 // player movement speed
 export const PLAYER_SPEED = 5;
+export const PATROL_SPEED = 3;
 
 // orientation based on movement directions (in radians)
 export const MOVEMENT_DIRECTION_ANGLES = {
@@ -38,3 +39,6 @@ export const MOVEMENT_DIRECTION_ANGLES = {
 export const BULLET_TIME_DIFF = 400;
 
 export const BULLET_SPEED = 40;
+
+export const PATROL_UPPER_LIMIT = window.innerHeight * 0.2;
+export const PATROL_LOWER_LIMIT = window.innerHeight * 0.8;
