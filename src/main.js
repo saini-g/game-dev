@@ -4,7 +4,7 @@ import { Application, Loader } from 'pixi.js';
 import { velocityObs, shootingObs } from './game-observables';
 import { getPlayerPosition, getPlayerRotation, spawnTank, getTankDirection } from './object-helpers/player';
 import { spawnBullet, getBulletPosition } from './object-helpers/bullet';
-import { startPatrol } from './object-helpers/enemy';
+import { startPatrol, getDistance, chasePlayer } from './object-helpers/enemy';
 import { PATROL_UPPER_LIMIT, PATROL_LOWER_LIMIT } from './constants';
 
 const bulletImg = require('../images/bullet.png');
@@ -22,17 +22,12 @@ app.renderer.view.style.position = 'absolute';
 app.renderer.view.style.display = 'block';
 document.body.appendChild(app.view);
 
-//
-// game vars
-//
 let tank;
 let enemy;
 
-// TODO: change game state to behaviour subject
 const GAME_STATE = {
   playerBullets: []
 };
-//
 
 const loader = new Loader();
 loader
@@ -114,13 +109,22 @@ function gameLoop(delta) {
     tank.getChildAt(0).rotation = tankRotation;
   }
 
-  if (enemy.y <= PATROL_UPPER_LIMIT) {
-    enemy.velocity = { vx: 0, vy: 1 };
+  const distanceFromPlayer = getDistance(tank, enemy);
+
+  if (distanceFromPlayer <= window.innerWidth / 4) {
+    const newVelocity = chasePlayer(enemy, tank);
+    enemy.velocity = newVelocity;
+  } else {
+
+    if (enemy.y <= PATROL_UPPER_LIMIT) {
+      enemy.velocity = { vx: 0, vy: 1 };
+    }
+
+    if (enemy.y >= PATROL_LOWER_LIMIT) {
+      enemy.velocity = { vx: 0, vy: -1 };
+    }
   }
 
-  if (enemy.y >= PATROL_LOWER_LIMIT) {
-    enemy.velocity = { vx: 0, vy: -1 };
-  }
   const enemyPos = getPlayerPosition(enemy);
   enemy.x = enemyPos.x;
   enemy.y = enemyPos.y;
@@ -128,4 +132,11 @@ function gameLoop(delta) {
   const enemyRotation = getTankDirection(enemy.velocity);
   enemy.getChildAt(0).rotation = enemyRotation;
   enemy.getChildAt(1).rotation = enemyRotation;
+
+  /* enemy.getChildAt(1).rotation = getPlayerRotation({
+    destX: tank.x,
+    destY: tank.y,
+    srcX: enemy.x,
+    srcY: enemy.y
+  }); */
 }

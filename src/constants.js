@@ -21,6 +21,7 @@ export const EVENT_TYPES = {
 
 // player movement speed
 export const PLAYER_SPEED = 5;
+export const ENEMY_SPEED = 4;
 export const PATROL_SPEED = 3;
 
 // orientation based on movement directions (in radians)
