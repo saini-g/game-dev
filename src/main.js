@@ -1,15 +1,23 @@
 
 import { Application, Loader } from 'pixi.js';
 
-import { velocityObs, shootingObs } from './game-observables';
-import { getPlayerPosition, getPlayerRotation, spawnTank, getTankDirection } from './object-helpers/player';
+import { velocityObs, shootingObs, mouseMoveObs } from './game-observables';
+import {
+  getPlayerPosition,
+  getPlayerRotation,
+  spawnTank,
+  getTankDirection,
+  spawnCrosshair
+} from './object-helpers/player';
 import { spawnBullet, getBulletPosition } from './object-helpers/bullet';
-import { startPatrol, getDistance, chasePlayer } from './object-helpers/enemy';
-import { PATROL_UPPER_LIMIT, PATROL_LOWER_LIMIT } from './constants';
+import { startPatrol, chasePlayer } from './object-helpers/enemy';
+import { getDistance } from './object-helpers/general-game';
+import { PATROL_UPPER_LIMIT, PATROL_LOWER_LIMIT, BULLET_RANGE } from './constants';
 
 const bulletImg = require('../images/bullet.png');
 const tankBodyImg = require('../images/tank-body.png');
 const turretImg = require('../images/turret.png');
+const crosshairImg = require('../images/crosshair.png');
 
 let app = new Application({
   width: window.innerWidth,
@@ -22,8 +30,12 @@ app.renderer.view.style.position = 'absolute';
 app.renderer.view.style.display = 'block';
 document.body.appendChild(app.view);
 
+//app.renderer.plugins.interaction.cursorStyles.default = `url(${crosshairImg}), auto`;
+
 let tank;
 let enemy;
+let crosshair;
+const interactionPlugin = app.renderer.plugins.interaction;
 
 const GAME_STATE = {
   playerBullets: []
@@ -34,6 +46,7 @@ loader
   .add('bullet', bulletImg)
   .add('tank', tankBodyImg)
   .add('turret', turretImg)
+  .add('crosshair', crosshairImg)
   .load(function(_loader, resources) {
 
     tank = spawnTank(
@@ -65,6 +78,16 @@ loader
       }
     });
 
+    crosshair = spawnCrosshair(resources.crosshair);
+    app.stage.addChild(crosshair);
+
+    mouseMoveObs.subscribe({
+      next: function(coords) {
+        crosshair.x = coords.x;
+        crosshair.y = coords.y;
+      }
+    });
+
     app.ticker.add(gameLoop);
   });
 
@@ -79,20 +102,29 @@ function gameLoop(delta) {
   if (GAME_STATE.playerBullets.length > 0) {
 
     for (const bullet of GAME_STATE.playerBullets) {
-      const newPosition = getBulletPosition(
-        { x: bullet.x, y: bullet.y },
-        bullet.speed,
-        bullet.rotation
+      const travelledDistance = getDistance(
+        { x1: bullet.origin.x, y1: bullet.origin.y },
+        { x2: bullet.x, y2: bullet.y }
       );
-      bullet.x = newPosition.x;
-      bullet.y = newPosition.y;
+
+      if (travelledDistance < BULLET_RANGE) {
+        const newPosition = getBulletPosition(
+          { x: bullet.x, y: bullet.y },
+          bullet.speed,
+          bullet.rotation
+        );
+        bullet.x = newPosition.x;
+        bullet.y = newPosition.y;
+      } else {
+        app.stage.removeChild(bullet);
+      }
     }
   }
 
   const turret = tank.getChildAt(1);
   turret.rotation = getPlayerRotation({
-    destX: app.renderer.plugins.interaction.mouse.global.x,
-    destY: app.renderer.plugins.interaction.mouse.global.y,
+    destX: interactionPlugin.mouse.global.x,
+    destY: interactionPlugin.mouse.global.y,
     srcX: tank.x,
     srcY: tank.y
   });
@@ -102,14 +134,17 @@ function gameLoop(delta) {
     || tank.velocity.vy !== 0
   ) {
     const newPosition = getPlayerPosition(tank);
-    tank.x = newPosition.x;
-    tank.y = newPosition.y;
+    tank.x += newPosition.x;
+    tank.y += newPosition.y;
 
     const tankRotation = getTankDirection(tank.velocity);
     tank.getChildAt(0).rotation = tankRotation;
   }
 
-  const distanceFromPlayer = getDistance(tank, enemy);
+  const distanceFromPlayer = getDistance(
+    { x1: tank.x, y1: tank.y },
+    { x2: enemy.x, y2: enemy.y }
+  );
 
   if (distanceFromPlayer <= window.innerWidth / 4) {
     const newVelocity = chasePlayer(enemy, tank);
@@ -126,8 +161,8 @@ function gameLoop(delta) {
   }
 
   const enemyPos = getPlayerPosition(enemy);
-  enemy.x = enemyPos.x;
-  enemy.y = enemyPos.y;
+  enemy.x += enemyPos.x;
+  enemy.y += enemyPos.y;
 
   const enemyRotation = getTankDirection(enemy.velocity);
   enemy.getChildAt(0).rotation = enemyRotation;

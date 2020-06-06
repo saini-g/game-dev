@@ -27,7 +27,3 @@ export function chasePlayer(enemy, tank) {
   }
   return enemyVelocity;
 }
-
-export function getDistance(char1, char2) {
-  return Math.hypot(char1.x - char2.x, char1.y - char2.y);
-}

@@ -41,5 +41,7 @@ export const BULLET_TIME_DIFF = 400;
 
 export const BULLET_SPEED = 40;
 
+export const BULLET_RANGE = 500;
+
 export const PATROL_UPPER_LIMIT = window.innerHeight * 0.2;
 export const PATROL_LOWER_LIMIT = window.innerHeight * 0.8;

@@ -4,12 +4,14 @@ import { PLAYER_SPEED, MOVEMENT_DIRECTION_ANGLES } from '../constants';
 
 export function getPlayerPosition(character) {
   const position = { x: character.x, y: character.y };
+  const delPosition = { x: 0, y: 0 };
 
   if (
     (character.velocity.vx > 0 && position.x < window.innerWidth - character.width / 2)
     || (character.velocity.vx < 0 && position.x > character.width / 2)
   ) {
     position.x += character.velocity.vx * character.speed;
+    delPosition.x = character.velocity.vx * character.speed;
   }
 
   if (
@@ -17,8 +19,9 @@ export function getPlayerPosition(character) {
     || (character.velocity.vy < 0 && position.y > character.height / 2)
   ) {
     position.y += character.velocity.vy * character.speed;
+    delPosition.y = character.velocity.vy * character.speed;
   }
-  return position;
+  return delPosition;
 }
 
 export function getPlayerRotation({ destX, destY, srcX, srcY }) {
@@ -43,4 +46,10 @@ export function spawnTank(bodySpr, turretSpr, { x, y }) {
 export function getTankDirection(velocity) {
   const velocityStr = `${velocity.vx},${velocity.vy}`;
   return MOVEMENT_DIRECTION_ANGLES[velocityStr] || 0;
+}
+
+export function spawnCrosshair(crosshairSpr) {
+  const crosshair = new Sprite(crosshairSpr.texture);
+  crosshair.anchor.set(0.5);
+  return crosshair;
 }

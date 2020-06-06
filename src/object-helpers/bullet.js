@@ -9,6 +9,10 @@ export function spawnBullet(bulletSpr, { x, y, rotation }) {
   newBullet.y = y + Math.sin(rotation) * 40;
   newBullet.speed = BULLET_SPEED;
   newBullet.rotation = rotation;
+  newBullet.origin = {
+    x: x + Math.cos(rotation) * 40,
+    y: y + Math.sin(rotation) * 40
+  };
   return newBullet;
 }
 
