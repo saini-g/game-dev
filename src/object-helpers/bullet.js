@@ -2,11 +2,11 @@ import { Sprite } from 'pixi.js';
 
 import { BULLET_SPEED } from '../constants';
 
-export function spawnBullet(bulletSpr, { x, y, rotation }) {
-  const newBullet = new Sprite(bulletSpr.texture);
+export function spawnBullet(bulletTex, { x, y, rotation }) {
+  const newBullet = new Sprite(bulletTex);
   newBullet.anchor.set(0.5);
-  newBullet.x = x + Math.cos(rotation) * 40;
-  newBullet.y = y + Math.sin(rotation) * 40;
+  newBullet.x = x + Math.cos(rotation) * 50;
+  newBullet.y = y + Math.sin(rotation) * 50;
   newBullet.speed = BULLET_SPEED;
   newBullet.rotation = rotation;
   newBullet.origin = {

@@ -28,15 +28,15 @@ export function getPlayerRotation({ destX, destY, srcX, srcY }) {
   return Math.atan2(destY - srcY, destX - srcX);
 }
 
-export function spawnTank(bodySpr, turretSpr, { x, y }) {
+export function spawnTank(bodyTex, turretTex, { x, y }) {
   const tank = new Container();
   tank.x = x;
   tank.y = y;
   tank.velocity = { vx: 0, vy: 0 };
   tank.speed = PLAYER_SPEED;
-  const body = new Sprite(bodySpr.texture);
+  const body = new Sprite(bodyTex);
   body.anchor.set(0.5);
-  const turret = new Sprite(turretSpr.texture);
+  const turret = new Sprite(turretTex);
   turret.anchor.set(0.28, 0.5);
   tank.addChildAt(body, 0);
   tank.addChildAt(turret, 1);
@@ -48,8 +48,8 @@ export function getTankDirection(velocity) {
   return MOVEMENT_DIRECTION_ANGLES[velocityStr] || 0;
 }
 
-export function spawnCrosshair(crosshairSpr) {
-  const crosshair = new Sprite(crosshairSpr.texture);
+export function spawnCrosshair(crosshairTex) {
+  const crosshair = new Sprite(crosshairTex);
   crosshair.anchor.set(0.5);
   return crosshair;
 }
