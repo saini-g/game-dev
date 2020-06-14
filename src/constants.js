@@ -21,7 +21,9 @@ export const EVENT_TYPES = {
 
 // player movement speed
 export const PLAYER_SPEED = 5;
+// enemy speed when chasing player - increase to make chases more exciting
 export const ENEMY_SPEED = 3;
+// enemy speed when patrolling
 export const PATROL_SPEED = 3;
 
 // orientation based on movement directions (in radians)
@@ -37,7 +39,7 @@ export const MOVEMENT_DIRECTION_ANGLES = {
 };
 
 // time between 2 bullets (ms)
-export const BULLET_TIME_DIFF = 400;
+export const RELOAD_TIME = 400;
 
 export const BULLET_SPEED = 25;
 

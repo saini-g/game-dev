@@ -1,6 +1,6 @@
 import { Application, Loader } from 'pixi.js';
 
-import { velocityObs, shootingObs, mouseMoveObs } from './game-observables';
+import { velocityObs, shootingObs, mouseMoveObs, enemyShootingObs } from './game-observables';
 import {
   getPlayerPosition,
   getPlayerRotation,
@@ -94,12 +94,29 @@ loader
       }
     });
 
+    enemyShootingObs.subscribe({ next: fireEnemyBullet });
+
     app.ticker.add(gameLoop);
   });
 
 function updatePlayerVelocity(velocity) {
   tank.velocity.vx = velocity.vx;
   tank.velocity.vy = velocity.vy;
+}
+
+function fireEnemyBullet(val) {
+  console.log(val);
+
+  if (enemy.isChasing) {
+    const newBullet = spawnBullet(resourceTextures.bullet, {
+      x: enemy.position.x,
+      y: enemy.position.y,
+      rotation: enemy.getChildAt(1).rotation
+    });
+    newBullet.firedBy = 'enemy';
+    app.stage.addChild(newBullet);
+    GAME_STATE.bullets.push(newBullet);
+  }
 }
 
 // all changes on game screen should be done here
@@ -186,15 +203,6 @@ function gameLoop(delta) {
       srcX: enemy.x,
       srcY: enemy.y
     });
-
-    const newBullet = spawnBullet(resourceTextures.bullet, {
-      x: enemy.position.x,
-      y: enemy.position.y,
-      rotation: enemy.getChildAt(1).rotation
-    });
-    newBullet.firedBy = 'enemy';
-    app.stage.addChild(newBullet);
-    GAME_STATE.bullets.push(newBullet);
   } else {
     enemy.getChildAt(1).rotation = enemyRotation;
   }
